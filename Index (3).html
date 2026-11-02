@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Planning hebdomadaire – Volet agroforesterie</title>
+<style>
+:root{--bg:#f3f5ef;--surf:#fff;--ink:#1d2a1f;--mut:#5d6b5f;--line:#d5dccf;--acc:#2f6b3a;--acc-ink:#fff;--soft:#e6efe0;--alt:#f7faf4;--warn:#b4531a;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121a14;--surf:#1a251c;--ink:#e8efe6;--mut:#9fb0a2;--line:#2f3f32;--acc:#7cc487;--acc-ink:#0d1a10;--soft:#223326;--alt:#16211a;--warn:#e69a62;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#121a14;--surf:#1a251c;--ink:#e8efe6;--mut:#9fb0a2;--line:#2f3f32;--acc:#7cc487;--acc-ink:#0d1a10;--soft:#223326;--alt:#16211a;--warn:#e69a62;color-scheme:dark}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 "Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif}
+.wrap{max-width:1500px;margin:0 auto;padding:18px 16px 40px}
+h1{font-size:1.5rem;margin:0;letter-spacing:-.01em}
+.sub{color:var(--mut);margin:2px 0 0}
+.top{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;justify-content:space-between;margin-bottom:14px}
+.week{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.week label{display:flex;flex-direction:column;font-size:.8rem;color:var(--mut);gap:2px}
+input,select,button{font:inherit;color:inherit}
+input[type=date],input[type=text],select{border:1px solid var(--line);background:var(--surf);border-radius:8px;padding:8px 10px;min-height:38px}
+input:focus-visible,select:focus-visible,button:focus-visible,[contenteditable]:focus-visible,.chip:focus-within{outline:2px solid var(--acc);outline-offset:1px}
+.btn{border:1px solid var(--line);background:var(--surf);border-radius:8px;padding:8px 14px;cursor:pointer;min-height:38px}
+.btn:hover{background:var(--soft)}
+.btn.pri{background:var(--acc);color:var(--acc-ink);border-color:var(--acc);font-weight:600}
+.btn.pri:hover{filter:brightness(1.08)}
+.panel{background:var(--surf);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:14px}
+.panel h2{font-size:1rem;margin:0 0 10px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-bottom:12px}
+.grid label{display:flex;flex-direction:column;font-size:.85rem;color:var(--mut);gap:4px}
+.grid input{width:100%;color:var(--ink)}
+.lab{font-size:.85rem;color:var(--mut);margin:8px 0 6px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.lab button{border:0;background:none;color:var(--acc);cursor:pointer;text-decoration:underline;padding:0;font-size:.85rem}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{position:relative}
+.chip input{position:absolute;opacity:0;inset:0;cursor:pointer;margin:0}
+.chip span{display:inline-block;padding:5px 12px;border:1px solid var(--line);border-radius:999px;background:var(--surf);font-size:.88rem}
+.chip input:checked+span{background:var(--acc);color:var(--acc-ink);border-color:var(--acc)}
+.actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:14px}
+.actions .gap{flex:1}
+.opt{font-size:.88rem;display:flex;gap:6px;align-items:center}
+details.more{margin-top:12px;border-top:1px solid var(--line);padding-top:10px}
+details.more summary{cursor:pointer;color:var(--acc);font-weight:600}
+.row2{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px}
+.tablewrap{background:var(--surf);border:1px solid var(--line);border-radius:12px;overflow:auto;max-height:78vh}
+.ptitle{display:none}
+table{border-collapse:separate;border-spacing:0;width:100%;min-width:1500px}
+th,td{border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:6px 8px;vertical-align:top;font-size:.9rem}
+thead th{position:sticky;top:0;background:var(--soft);z-index:2;text-align:center;font-weight:600}
+thead tr:nth-child(2) th{top:var(--h1,38px);font-weight:500;font-size:.8rem;color:var(--mut)}
+th small{display:block;font-weight:400;color:var(--mut)}
+.nm{position:sticky;left:0;z-index:1;background:var(--surf);min-width:150px;font-weight:600;border-right:2px solid var(--line)}
+thead .nm{z-index:3;background:var(--soft)}
+.nm .x{float:right;border:0;background:none;cursor:pointer;color:var(--mut);font-size:1rem;line-height:1}
+.nm .x:hover{color:var(--warn)}
+td.c{min-width:100px;white-space:pre-wrap;word-break:break-word;min-height:34px}
+td.a{min-width:130px}
+td.d1{background:var(--alt)}
+tbody tr:hover td.c,tbody tr:hover .nm{background:var(--soft)}
+td.c:empty::before{content:attr(data-ph);color:var(--mut);opacity:.45}
+.hint{color:var(--mut);font-size:.85rem;margin:8px 2px 0}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:9px 16px;border-radius:8px;font-size:.9rem;opacity:0;pointer-events:none;transition:opacity .2s}
+.toast.on{opacity:1}
+@media (max-width:700px){.wrap{padding:12px 10px 30px}h1{font-size:1.25rem}}
+@media print{
+ @page{size:A4 landscape;margin:8mm}
+ :root{--bg:#fff;--surf:#fff;--ink:#000;--mut:#333;--line:#777;--soft:#e3ecdc;--alt:#f4f7f1;padding:0}
+ body{background:#fff;font-size:9px}
+ .noprint,.top,.panel,.hint,.toast{display:none!important}
+ .wrap{padding:0;max-width:none}
+ .ptitle{display:block;margin-bottom:6px}
+ .ptitle h1{font-size:16px}.ptitle p{margin:2px 0 0;font-size:11px}
+ .tablewrap{border:0;overflow:visible;max-height:none}
+ table{min-width:0;width:100%;table-layout:fixed}
+ th,td{font-size:8.5px;padding:3px 4px;position:static!important}
+ .nm{min-width:0;width:62px}.nm .x{display:none}
+ td.c{min-width:0;min-height:26px}
+ td.c:empty::before{content:""}
+ tr{break-inside:avoid}
+ *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+ <div class="top noprint">
+  <div>
+   <h1>Planning hebdomadaire – Volet agroforesterie</h1>
+   <p class="sub">Remplissez la semaine, puis imprimez ou enregistrez en PDF pour le distribuer.</p>
+  </div>
+  <div class="week">
+   <button class="btn" id="prev" title="Semaine précédente">‹ Précédente</button>
+   <label>Du<input type="date" id="start"></label>
+   <label>Au<input type="date" id="end" readonly tabindex="-1"></label>
+   <button class="btn" id="next" title="Semaine suivante">Suivante ›</button>
+   <button class="btn pri" id="print">Imprimer / Enregistrer en PDF</button>
+  </div>
+ </div>
+
+ <section class="panel noprint" aria-labelledby="rq">
+  <h2 id="rq">Remplissage rapide</h2>
+  <div class="grid">
+   <label>Activité<input type="text" id="qa" list="la" placeholder="Ex. : Plantation, suivi pépinière…"></label>
+   <label>Zone d’intervention<input type="text" id="qz" list="lz" placeholder="Ex. : Ambohimanga, Parcelle 3"></label>
+  </div>
+  <datalist id="la"></datalist><datalist id="lz"></datalist>
+  <div class="lab"><b>Chefs d’équipe</b><button id="allC">Tous</button><button id="noC">Aucun</button></div>
+  <div class="chips" id="chefs"></div>
+  <div class="lab"><b>Jours</b><button id="wk">Lun–Ven</button><button id="allD">Tous</button><button id="noD">Aucun</button></div>
+  <div class="chips" id="days"></div>
+  <div class="actions">
+   <button class="btn pri" id="apply">Appliquer à la sélection</button>
+   <label class="opt"><input type="checkbox" id="over" checked> Remplacer le contenu existant</label>
+   <span class="gap"></span>
+   <button class="btn" id="clear">Vider la sélection</button>
+  </div>
+  <details class="more">
+   <summary>Copier la semaine d’un chef d’équipe</summary>
+   <div class="row2">
+    <select id="src" aria-label="Chef d’équipe source"></select>
+    <button class="btn" id="copy">Copier vers les chefs cochés</button>
+    <span class="hint" style="margin:0">Les jours cochés ci-dessus sont les seuls copiés.</span>
+   </div>
+  </details>
+  <details class="more">
+   <summary>Gérer les chefs d’équipe</summary>
+   <div class="row2">
+    <input type="text" id="newc" placeholder="Nom du chef d’équipe">
+    <button class="btn" id="addc">Ajouter</button>
+    <button class="btn" id="theme">Thème clair / sombre</button>
+   </div>
+  </details>
+ </section>
+
+ <div class="tablewrap" id="tw">
+  <div class="ptitle"><h1>Volet agroforesterie</h1><p id="pt"></p></div>
+  <table id="tb" aria-label="Planning de la semaine"></table>
+ </div>
+ <p class="hint noprint">Cliquez dans une case pour écrire. Pour plusieurs zones, séparez-les par une virgule ou un retour à la ligne. Tout est enregistré automatiquement sur cet appareil.</p>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(function(){
+var DAYS=["Lundi","Mardi","Mercredi","Jeudi","Vendredi","Samedi","Dimanche"];
+var KEY="planning-agro-v1";
+var $=function(i){return document.getElementById(i)};
+function iso(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+function parse(s){var p=s.split("-");return new Date(+p[0],+p[1]-1,+p[2])}
+function add(s,n){var d=parse(s);d.setDate(d.getDate()+n);return iso(d)}
+function fr(s,short){var d=parse(s),t=String(d.getDate()).padStart(2,"0")+"/"+String(d.getMonth()+1).padStart(2,"0");return short?t:t+"/"+d.getFullYear()}
+function monday(){var d=new Date();d.setDate(d.getDate()-((d.getDay()+6)%7));return iso(d)}
+var names=["Francia","Dorice","Tessia","Zoé","Landry","Rojo","Cibelish","Jusca","Minah","Rivaldo","Valios","Frédéric","Nathalie","Febicia"];
+var S=null;
+try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}
+if(!S||!S.chefs){S={chefs:names.map(function(n,i){return{id:i+1,n:n}}),weeks:{},start:monday(),next:15,theme:""}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+function applyTheme(){if(S.theme)document.documentElement.setAttribute("data-theme",S.theme);else document.documentElement.removeAttribute("data-theme")}
+function wk(){return S.weeks[S.start]||(S.weeks[S.start]={})}
+function cell(c,d){var w=wk(),k=c+"|"+d;return w[k]||(w[k]={a:"",z:""})}
+var selC={},selD={};
+function toast(m){var t=$("toast");t.textContent=m;t.classList.add("on");clearTimeout(toast.t);toast.t=setTimeout(function(){t.classList.remove("on")},2200)}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+
+function suggestions(){
+ var A={},Z={};
+ Object.keys(S.weeks).forEach(function(w){var o=S.weeks[w];Object.keys(o).forEach(function(k){
+  if(o[k].a)A[o[k].a.trim()]=1;
+  if(o[k].z)o[k].z.split(/[,\n]/).forEach(function(z){z=z.trim();if(z)Z[z]=1});
+ })});
+ $("la").innerHTML=Object.keys(A).slice(0,200).map(function(v){return'<option value="'+esc(v)+'">'}).join("");
+ $("lz").innerHTML=Object.keys(Z).slice(0,200).map(function(v){return'<option value="'+esc(v)+'">'}).join("");
+}
+
+function renderTable(){
+ var h='<thead><tr><th class="nm" rowspan="2">Chef d’équipe</th>';
+ DAYS.forEach(function(d,i){h+='<th colspan="2">'+d+'<small>'+fr(add(S.start,i),true)+'</small></th>'});
+ h+='</tr><tr>';
+ DAYS.forEach(function(){h+='<th>Activité</th><th>Localisation</th>'});
+ h+='</tr></thead><tbody>';
+ S.chefs.forEach(function(c){
+  h+='<tr><td class="nm"><button class="x noprint" data-del="'+c.id+'" title="Retirer ce chef d’équipe" aria-label="Retirer '+esc(c.n)+'">×</button><span contenteditable="true" data-nm="'+c.id+'">'+esc(c.n)+'</span></td>';
+  DAYS.forEach(function(_,d){
+   var v=cell(c.id,d),cl=d%2?"":" d1";
+   h+='<td class="c a'+cl+'" contenteditable="true" data-c="'+c.id+'" data-d="'+d+'" data-f="a" data-ph="—">'+esc(v.a)+'</td>';
+   h+='<td class="c z'+cl+'" contenteditable="true" data-c="'+c.id+'" data-d="'+d+'" data-f="z" data-ph="—">'+esc(v.z)+'</td>';
+  });
+  h+='</tr>';
+ });
+ $("tb").innerHTML=h+'</tbody>';
+ var r=$("tb").querySelector("thead tr");document.documentElement.style.setProperty("--h1",r.offsetHeight+"px");
+}
+
+function renderChips(){
+ $("chefs").innerHTML=S.chefs.map(function(c){return'<label class="chip"><input type="checkbox" data-sc="'+c.id+'"'+(selC[c.id]?" checked":"")+'><span>'+esc(c.n)+'</span></label>'}).join("");
+ $("days").innerHTML=DAYS.map(function(d,i){return'<label class="chip"><input type="checkbox" data-sd="'+i+'"'+(selD[i]?" checked":"")+'><span>'+d+'</span></label>'}).join("");
+ $("src").innerHTML=S.chefs.map(function(c){return'<option value="'+c.id+'">'+esc(c.n)+'</option>'}).join("");
+}
+
+function renderHead(){
+ var e=add(S.start,6);
+ $("start").value=S.start;$("end").value=e;
+ $("pt").textContent="Planning du "+fr(S.start)+" au "+fr(e);
+ document.title="Planning du "+fr(S.start)+" au "+fr(e)+" – Volet agroforesterie";
+}
+function renderAll(){renderHead();renderTable();renderChips();suggestions()}
+
+$("tb").addEventListener("input",function(e){
+ var t=e.target;
+ if(t.dataset.f){cell(t.dataset.c,t.dataset.d)[t.dataset.f]=t.innerText.replace(/\n$/,"")}
+ else if(t.dataset.nm){var c=S.chefs.filter(function(x){return x.id==t.dataset.nm})[0];if(c)c.n=t.textContent.trim()}
+ save();
+});
+$("tb").addEventListener("focusout",function(e){if(e.target.dataset.nm||e.target.dataset.f){renderChips();suggestions()}});
+$("tb").addEventListener("click",function(e){
+ var id=e.target.dataset&&e.target.dataset.del;if(!id)return;
+ var c=S.chefs.filter(function(x){return x.id==id})[0];
+ S.chefs=S.chefs.filter(function(x){return x.id!=id});delete selC[id];save();renderTable();renderChips();toast(c.n+" retiré(e) du planning");
+});
+document.addEventListener("change",function(e){
+ var t=e.target;
+ if(t.dataset.sc)selC[t.dataset.sc]=t.checked;
+ if(t.dataset.sd)selD[t.dataset.sd]=t.checked;
+});
+function setAll(sel,list,v){list.forEach(function(k){sel[k]=v});renderChips()}
+$("allC").onclick=function(){setAll(selC,S.chefs.map(function(c){return c.id}),true)};
+$("noC").onclick=function(){selC={};renderChips()};
+$("allD").onclick=function(){selD={};setAll(selD,[0,1,2,3,4,5,6],true)};
+$("noD").onclick=function(){selD={};renderChips()};
+$("wk").onclick=function(){selD={};setAll(selD,[0,1,2,3,4],true)};
+
+function targets(){
+ var cs=S.chefs.filter(function(c){return selC[c.id]}),ds=[0,1,2,3,4,5,6].filter(function(d){return selD[d]});
+ if(!cs.length||!ds.length){toast("Cochez au moins un chef d’équipe et un jour.");return null}
+ return{cs:cs,ds:ds};
+}
+$("apply").onclick=function(){
+ var t=targets();if(!t)return;
+ var a=$("qa").value.trim(),z=$("qz").value.trim(),over=$("over").checked;
+ if(!a&&!z){toast("Saisissez une activité ou une zone.");return}
+ t.cs.forEach(function(c){t.ds.forEach(function(d){
+  var v=cell(c.id,d);
+  if(a&&(over||!v.a))v.a=a;
+  if(z&&(over||!v.z))v.z=z;
+ })});
+ save();renderTable();suggestions();toast(t.cs.length*t.ds.length+" cases remplies");
+};
+$("clear").onclick=function(){
+ var t=targets();if(!t)return;
+ t.cs.forEach(function(c){t.ds.forEach(function(d){var v=cell(c.id,d);v.a="";v.z=""})});
+ save();renderTable();toast("Sélection vidée");
+};
+$("copy").onclick=function(){
+ var t=targets();if(!t)return;var s=$("src").value,n=0;
+ t.cs.forEach(function(c){if(c.id==s)return;t.ds.forEach(function(d){var o=cell(s,d),v=cell(c.id,d);v.a=o.a;v.z=o.z});n++});
+ save();renderTable();toast("Semaine copiée vers "+n+" chef(s) d’équipe");
+};
+$("addc").onclick=function(){
+ var n=$("newc").value.trim();if(!n){toast("Saisissez un nom.");return}
+ S.chefs.push({id:S.next++,n:n});$("newc").value="";save();renderTable();renderChips();toast(n+" ajouté(e)");
+};
+$("newc").addEventListener("keydown",function(e){if(e.key==="Enter")$("addc").click()});
+$("theme").onclick=function(){
+ var dark=document.documentElement.getAttribute("data-theme")==="dark"||(!S.theme&&matchMedia("(prefers-color-scheme: dark)").matches);
+ S.theme=dark?"light":"dark";applyTheme();save();
+};
+function go(s){S.start=s;save();renderAll()}
+$("prev").onclick=function(){go(add(S.start,-7))};
+$("next").onclick=function(){go(add(S.start,7))};
+$("start").onchange=function(){if(this.value)go(this.value)};
+$("print").onclick=function(){
+ try{window.print()}catch(e){toast("Impression bloquée : ouvrez la page dans son propre onglet.")}
+};
+
+applyTheme();renderAll();
+})();
+</script>
+</body>
+</html>
